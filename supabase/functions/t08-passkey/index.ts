@@ -19,8 +19,55 @@ Deno.serve(async req=>{
  const url=new URL(req.url),route=url.searchParams.get('route')||'auth',action=url.searchParams.get('action')||'';
  try{
  if(req.headers.get('x-t08-origin')!==ORIGIN)return deny(403);
- if(!['GET','POST','PATCH','DELETE'].includes(req.method))return deny(405);
+ if(!['GET','POST','PUT','PATCH','DELETE'].includes(req.method))return deny(405);
  const uid=await user(req);
+ if(route==='info'){
+  if(!uid)return deny(401);
+  if(req.method==='GET'){
+   const rows=await db.unsafe('select id,kind,label,value,created_at,updated_at from t08.private_fields where user_id=$1 order by created_at asc',[uid]);
+   return reply({fields:rows});
+  }
+  const b=await req.json().catch(()=>({}));
+  if(req.method==='PUT'){
+   const kind=safe(b.kind);
+   const labels={phone:'전화번호',address:'상세 주소',birthdate:'생년월일'};
+   if(!Object.hasOwn(labels,kind)||typeof b.value!=='string')return deny(400);
+   const val=b.value.trim();
+   if(val.length>5000)return reply({error:'입력값이 너무 깁니다.'},422);
+   if(kind==='phone'&&val.length>64)return reply({error:'전화번호는 64자 이내로 입력해주세요.'},422);
+   if(kind==='address'&&val.length>500)return reply({error:'주소는 500자 이내로 입력해주세요.'},422);
+   if(kind==='birthdate'&&val){
+    const validDate=/^\d{4}-\d{2}-\d{2}$/.test(val) && !Number.isNaN(Date.parse(val)) && new Date(val).toISOString().slice(0,10)===val;
+    if(!validDate)return reply({error:'생년월일을 올바른 날짜로 입력해주세요.'},422);
+   }
+   if(!val){
+    await db.unsafe('delete from t08.private_fields where user_id=$1 and kind=$2',[uid,kind]);
+    return reply({cleared:true,kind});
+   }
+   const stored=await db.unsafe("insert into t08.private_fields(user_id,kind,label,value) values($1,$2,$3,$4) on conflict(user_id,kind) where kind <> 'custom' do update set value=excluded.value,updated_at=now() returning id,kind,label,value,created_at,updated_at",[uid,kind,labels[kind],val]);
+   return reply({field:stored[0]});
+  }
+  if(req.method==='POST'||req.method==='PATCH'){
+   const label=typeof b.label==='string'?b.label.trim():'';
+   const val=typeof b.value==='string'?b.value.trim():null;
+   if(!label||label.length>80||val===null||val.length>5000)return reply({error:'항목 이름은 1~80자, 내용은 최대 5000자로 입력해주세요.'},422);
+   if(req.method==='POST'){
+    const created=await db.unsafe("insert into t08.private_fields(user_id,kind,label,value) values($1,'custom',$2,$3) returning id,kind,label,value,created_at,updated_at",[uid,label,val]);
+    return reply({field:created[0]},201);
+   }
+   const id=safe(b.id);
+   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id))return deny(400);
+   const updated=await db.unsafe("update t08.private_fields set label=$1,value=$2,updated_at=now() where id=$3 and user_id=$4 and kind='custom' returning id,kind,label,value,created_at,updated_at",[label,val,id,uid]);
+   return updated.length?reply({field:updated[0]}):reply({error:'접근할 수 없는 항목입니다.'},404);
+  }
+  if(req.method==='DELETE'){
+   const id=safe(b.id);
+   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id))return deny(400);
+   const removed=await db.unsafe("delete from t08.private_fields where id=$1 and user_id=$2 and kind='custom' returning id",[id,uid]);
+   return removed.length?reply({deleted:true}):reply({error:'접근할 수 없는 항목입니다.'},404);
+  }
+  return deny(405);
+ }
  if(route==='private'){
   if(!uid)return deny(401);
   if(req.method==='GET'){

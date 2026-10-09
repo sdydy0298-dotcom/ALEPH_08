@@ -2,6 +2,21 @@
 import {startRegistration,startAuthentication} from 'https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@13.2.2/+esm';
 const el=id=>document.getElementById(id);
 const show=text=>el('message').textContent=text;
+function keyNotice(text,isError=false){
+ const panel=el('key-message');
+ panel.textContent=text;
+ panel.hidden=!text;
+ panel.classList.toggle('is-error',isError);
+ if(text)panel.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function registrationError(err){
+ const msg=String(err?.message||'');
+ if(/previously registered|already registered|already exists|excluded|invalidstateerror|authenticator.*registered/i.test(msg)||err?.name==='InvalidStateError'){
+  return '이미 이 계정에 등록된 패스키입니다. 기존 Google 비밀번호 관리자 대신 다른 패스키 저장소, 별도의 휴대전화 패스키 또는 보안 키를 선택하세요. 같은 계정에 동기화된 기존 패스키를 다시 선택해도 새 패스키로 추가되지 않습니다.';
+ }
+ if(err?.name==='NotAllowedError')return '등록을 취소했거나 기기 인증이 완료되지 않았습니다.';
+ return '패스키 추가에 실패했습니다. '+(msg||'기기의 패스키 지원 여부를 확인해주세요.');
+}
 async function api(path,method='GET',body=null){
  const result=await fetch('/api/'+path,{method,credentials:'same-origin',headers:body?{'Content-Type':'application/json'}:{},...(body?{body:JSON.stringify(body)}:{})});
  const data=await result.json().catch(()=>({}));
@@ -64,7 +79,15 @@ async function registration(additional){
  }
 }
 el('register').onclick=e=>busy(e.currentTarget,async()=>{try{await registration(false)}catch(e){show(e.name==='NotAllowedError'?'등록을 취소했습니다.':e.message)}});
-el('add-key').onclick=e=>busy(e.currentTarget,async()=>{try{await registration(true)}catch(e){show(e.name==='NotAllowedError'?'등록을 취소했습니다.':e.message)}});
+el('add-key').onclick=e=>busy(e.currentTarget,async()=>{
+ keyNotice('');
+ try{
+  await registration(true);
+  keyNotice('두 번째 패스키가 정상적으로 등록되었습니다.');
+ }catch(error){
+  keyNotice(registrationError(error),true);
+ }
+});
 el('login').onclick=e=>busy(e.currentTarget,async()=>{
  try{
  const username=el('login-name').value.trim();

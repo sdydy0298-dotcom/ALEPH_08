@@ -24,8 +24,15 @@
 <label for="reg-label">패스키 이름</label><input id="reg-label" placeholder="예: 노트북 또는 휴대폰">
 <button id="register" class="outline">첫 패스키 등록 <span>↗</span></button></article>
 </section>
-<section id="signed" hidden><div class="welcome"><div><p class="kicker">PRIVATE COLLECTION</p><h2><span id="username"></span>의 개인 보관함</h2><p>비공개 자료는 로그인 후 서버에서 가져옵니다.</p></div><button id="logout" class="small">로그아웃 ↗</button></div>
-<div id="notes" class="notes"></div>
+<section id="signed" hidden aria-labelledby="workspace-heading">
+<div class="welcome"><div><p class="kicker">SIGNED IN · PRIVATE WORKSPACE</p><h2 id="workspace-heading"><span id="username"></span>의 개인 보관함</h2><p>본인 인증을 완료했습니다. 이 화면의 기록은 로그인한 계정에만 표시됩니다.</p></div><button id="logout" class="small" type="button">로그아웃 ↗</button></div>
+<div class="workspace-summary" aria-label="내 보관함 상태">
+  <div class="summary-tile"><span class="summary-ico" aria-hidden="true">▤</span><div><strong id="notes-total">0</strong><span>비공개 기록</span></div></div>
+  <div class="summary-tile"><span class="summary-ico" aria-hidden="true">◇</span><div><strong id="keys-total">0</strong><span>등록된 패스키</span></div></div>
+  <div class="summary-tile verified"><span class="summary-ico" aria-hidden="true">✓</span><div><strong>보호 중</strong><span>세션 기반 접근 제어</span></div></div>
+</div>
+<div class="collection-heading"><div><p class="kicker">MY NOTES</p><h3>나의 비공개 기록</h3></div><span>서버에서 계정별로 조회</span></div>
+<div id="notes" class="notes" aria-live="polite"></div>
 <article class="management"><div><p class="kicker">SECURITY SETTINGS</p><h3>내 패스키 관리</h3><p>다른 기기를 추가로 등록해 둘 수 있습니다.</p></div>
 <div id="passkeys"></div><div class="add"><input id="add-label" placeholder="새 패스키 이름" aria-label="새 패스키 이름"><button class="solid" id="add-key">패스키 추가 →</button></div>
 <p class="footnote">마지막 패스키 삭제는 계정 접근을 보호하기 위해 제한됩니다.</p></article></section>

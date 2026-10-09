@@ -91,11 +91,13 @@ Deno.serve(async req=>{
   if(!v.verified)return deny(401);
   const done=await db.unsafe('update t08.passkeys set counter=$1 where credential_id=$2 and counter=$3 returning credential_id',[v.authenticationInfo.newCounter,key.credential_id,key.counter]);if(!done.length)return deny(401);
   const token=random();await db.unsafe("insert into t08.sessions(token_hash,user_id,expires_at) values($1,$2,now()+interval '4 hours')",[await hash(token),ch.user_id]);
-  return reply({authenticated:true},200,{'set-cookie':cookie(token,14400)});
+  const sessionCookie=cookie(token,14400);
+  return reply({authenticated:true},200,{'set-cookie':sessionCookie,'x-t08-session-cookie':sessionCookie});
  }
  if(action==='logout'){
   const token=value(req);if(token)await db.unsafe('delete from t08.sessions where token_hash=$1',[await hash(token)]);
-  return reply({loggedOut:true},200,{'set-cookie':cookie('',0)});
+  const clearedCookie=cookie('',0);
+  return reply({loggedOut:true},200,{'set-cookie':clearedCookie,'x-t08-session-cookie':clearedCookie});
  }
  return deny(404);
  }catch(e){console.error('T08 error',e instanceof Error?e.message:'unknown');return deny(400)}

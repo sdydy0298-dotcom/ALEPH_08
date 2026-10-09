@@ -6,6 +6,7 @@
   <title>SEO DONG YEON | One Page Profile</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="workspace-teaser.css" />
 </head>
 <body>
   <main class="page">
@@ -17,7 +18,7 @@
       <nav aria-label="주요 메뉴">
         <a href="#intro">Home</a>
         <a href="#strengths">About</a>
-        <a href="#t08-private">Private</a>
+        <a class="vault-nav" href="#t08-private"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> 내 공간</a>
       </nav>
     </header>
 
@@ -161,7 +162,47 @@
       </div>
     </section>
 
-    <section id="t08-private" class="card" style="margin-top:12px;padding:20px"><h2>Private Workspace</h2><p>패스키로 보호되는 개인 작업 공간입니다.</p><a href="/private.html">패스키 로그인하기 →</a></section>
+    <section id="t08-private" class="vault-teaser" aria-labelledby="vault-title">
+      <div class="vault-copy">
+        <p class="vault-overline">
+          <span class="vault-overline-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg>
+          </span>
+          PRIVATE WORKSPACE <span aria-hidden="true">·</span> ALEPH 08
+        </p>
+        <h2 id="vault-title">공개 소개는 그대로,<br><span>나의 기록은 나에게만.</span></h2>
+        <p class="vault-description">프로젝트 메모와 개인 기록을 패스키로 보호합니다.<br>비밀번호 없이 내 기기에서 인증하고 안전하게 확인하세요.</p>
+        <div class="vault-actions">
+          <a class="vault-button" href="/private.html">
+            내 공간 열기
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </a>
+          <span class="vault-note">등록된 패스키 또는 최초 등록 코드 필요</span>
+        </div>
+      </div>
+      <div class="vault-visual" aria-hidden="true">
+        <div class="vault-preview">
+          <div class="vault-preview-top">
+            <span class="vault-preview-label">MY PRIVATE SPACE</span>
+            <span class="vault-status">PASSKEY PROTECTED</span>
+          </div>
+          <div class="vault-preview-body">
+            <div class="vault-preview-symbol">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg>
+            </div>
+            <div>
+              <strong>나의 비공개 보관함</strong>
+              <p>인증한 사용자만 자료에 접근할 수 있어요.</p>
+            </div>
+          </div>
+          <div class="vault-preview-foot">
+            <span>개인 기록</span>
+            <span>패스키 관리</span>
+            <span>계정별 접근 제어</span>
+          </div>
+        </div>
+      </div>
+    </section>
     <footer>© 2026 SEO DONG YEON.</footer>
   </main>
 

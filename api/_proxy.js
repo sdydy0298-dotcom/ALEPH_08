@@ -11,7 +11,14 @@ export async function forward(req,res,route){
   res.statusCode=response.status;
   res.setHeader('content-type','application/json; charset=utf-8');
   res.setHeader('cache-control','no-store');
-  const cookie=response.headers.get('set-cookie');if(cookie)res.setHeader('set-cookie',cookie);
+  const action=url.searchParams.get('action');
+  const sessionAction=route==='auth'&&(action==='login-verify'||action==='logout');
+  if(sessionAction){
+   const cookie=response.headers.get('x-t08-session-cookie')||response.headers.get('set-cookie');
+   if(cookie)res.setHeader('Set-Cookie',cookie);
+   res.setHeader('X-T08-Session-Issued',cookie?'1':'0');
+  }
+  if(route==='auth'&&action==='me')res.setHeader('X-T08-Session-Received',/\\bt08_session=/.test(req.headers.cookie||'')?'1':'0');
   return res.end(await response.text());
  }catch(err){
   console.error('T08 upstream',err.message);

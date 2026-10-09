@@ -8,11 +8,11 @@ async function api(path,method='GET',body){
  if(!res.ok)throw Error(data.error||'서버 요청이 실패했습니다.');
  return data;
 }
-async function reload(){
+async function reload(updateFixed=true){
  const {fields}=await api('info');
  const fixed={};customs=[];
  for(const f of fields){if(f.kind==='custom')customs.push(f);else fixed[f.kind]=f.value;}
- for(const kind of fixedKinds)el('info-'+kind).value=fixed[kind]||'';
+ if(updateFixed)for(const kind of fixedKinds)el('info-'+kind).value=fixed[kind]||'';
  el('info-total').textContent=String(fields.length);
  el('custom-count').textContent=String(customs.length);
  drawCustoms();
@@ -55,7 +55,7 @@ function drawCustoms(){
   remove.onclick=async()=>{
    if(!confirm('선택한 비공개 항목을 삭제할까요?'))return;
    remove.disabled=true;
-   try{await api('info','DELETE',{id:item.id});if(editingId===item.id)resetCustom();await reload();msg('항목을 삭제했습니다.');}
+   try{await api('info','DELETE',{id:item.id});if(editingId===item.id)resetCustom();await reload(false);msg('항목을 삭제했습니다.');}
    catch(err){msg(err.message)}finally{remove.disabled=false;}
   };
   actions.append(edit,remove);card.append(body,actions);list.append(card);
@@ -79,7 +79,7 @@ el('custom-form').onsubmit=async event=>{
  try{
   const modifying=!!editingId;
   await api('info',modifying?'PATCH':'POST',{...(modifying?{id:editingId}:{}),label,value});
-  resetCustom();await reload();msg(modifying?'항목을 수정했습니다.':'새로운 비공개 항목을 저장했습니다.');
+  resetCustom();await reload(false);msg(modifying?'항목을 수정했습니다.':'새로운 비공개 항목을 저장했습니다.');
  }catch(error){msg(error.message)}
  finally{btn.disabled=false;}
 };

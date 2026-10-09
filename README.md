@@ -4,8 +4,8 @@
 
 ## Deployment
 
-- Public: https://aleph-08.vercel.app/
-- Private: https://aleph-08.vercel.app/private.html
+- Public: https://sdy-task08.vercel.app/
+- Private: https://sdy-task08.vercel.app/private.html
 - GitHub: https://github.com/sdydy0298-dotcom/ALEPH_08
 - Database: Supabase `aleph_common` → `t08` 전용 비공개 스키마
 - Authentication backend: Supabase Edge Function `t08-passkey`

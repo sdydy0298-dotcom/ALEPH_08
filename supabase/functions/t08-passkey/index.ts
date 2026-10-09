@@ -14,7 +14,6 @@ const unb64=t=>Uint8Array.from(atob(t.replace(/-/g,'+').replace(/_/g,'/')+'='.re
 const safe=x=>String(x||'').trim();
 async function user(req){const token=value(req);if(!token)return null;const u=await db.unsafe('select user_id from t08.sessions where token_hash=$1 and expires_at>now()',[await hash(token)]);return u[0]?.user_id||null}
 async function oneTime(id,purpose){const c=await db.unsafe('delete from t08.challenges where id=$1 and purpose=$2 and expires_at>now() returning *',[id,purpose]);if(!c.length)throw Error('challenge missing');return c[0]}
-async function invited(username,code){if(!code)return false;const r=await db.unsafe('select username from t08.invites where username=$1 and code_hash=$2 and claimed_at is null and expires_at>now()',[username,await hash(code)]);return !!r.length}
 const notes=u=>u==='demo_b'?[['실험 목표','가상 B 계정 전용 네트워크 실험 계획'],['보안 학습','가상 B 계정 보안 공부 내용'],['프로젝트 노트','가상 B 계정 프로젝트 계획']]:[['AI 인프라 설계','가상 A 계정 프로젝트 구성 초안'],['학습 기록','가상 A 계정 VLAN 및 OSPF 메모'],['월간 목표','가상 A 계정 학습 계획']];
 Deno.serve(async req=>{
  const url=new URL(req.url),route=url.searchParams.get('route')||'auth',action=url.searchParams.get('action')||'';
@@ -52,7 +51,6 @@ Deno.serve(async req=>{
   const name=safe(b.username);if(!/^[A-Za-z0-9_-]{2,48}$/.test(name))return deny();
   if(uid){const a=await db.unsafe('select username from t08.users where id=$1',[uid]);if(a[0]?.username!==name)return deny(403)}
   else{
-   if(!(await invited(name,safe(b.setupCode))))return deny(403);
    const a=await db.unsafe('select id from t08.users where username=$1',[name]);if(a.length)return deny(403);
   }
   const keys=uid?await db.unsafe('select credential_id,transports from t08.passkeys where user_id=$1',[uid]):[];
@@ -63,14 +61,12 @@ Deno.serve(async req=>{
  if(action==='register-verify'){
   const ch=await oneTime(safe(b.challengeId),'register');
   if(ch.user_id&&ch.user_id!==uid)return deny(403);
-  if(!ch.user_id&&!(await invited(ch.username,safe(b.setupCode))))return deny(403);
   const v=await verifyRegistrationResponse({response:b.response,expectedChallenge:ch.challenge,expectedOrigin:ORIGIN,expectedRPID:RPID,requireUserVerification:true});
   if(!v.verified||!v.registrationInfo)return deny(401);
   const {credential,credentialDeviceType,credentialBackedUp}=v.registrationInfo;
   await db.begin(async tx=>{
    let account=ch.user_id;
    if(!account){
-    const locked=await tx.unsafe('update t08.invites set claimed_at=now() where username=$1 and code_hash=$2 and claimed_at is null and expires_at>now() returning username',[ch.username,await hash(safe(b.setupCode))]);if(!locked.length)throw Error('invite consumed');
     const created=await tx.unsafe('insert into t08.users(username) values($1) returning id',[ch.username]);account=created[0].id;
     for(const [title,content] of notes(ch.username))await tx.unsafe('insert into t08.notes(user_id,title,body) values($1,$2,$3)',[account,title,content]);
    }

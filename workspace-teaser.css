@@ -1,11 +1,11 @@
 /* ALEPH T08 · Public page private-space preview.
-   Scoped to the T08 extension; original T01 sections remain unchanged. */
+   Scoped to the T08 extension using the original T01 palette; all T01 sections remain unchanged. */
 
 .topbar nav a.vault-nav {
-  color:#6749c8;
+  color:#075e4a;
   font-weight:800;
-  background:#f0ebff;
-  border:1px solid #e2d6ff;
+  background:#eef7f3;
+  border:1px solid #dce6e2;
   padding:7px 12px;
   border-radius:999px;
   text-decoration:none;
@@ -16,8 +16,8 @@
 }
 .topbar nav a.vault-nav:hover,
 .topbar nav a.vault-nav:focus-visible {
-  background:#e8dfff;
-  border-color:#bfacf4;
+  background:#e1f3eb;
+  border-color:#8ab8aa;
 }
 .vault-nav svg {height:14px;width:14px;flex:none;}
 
@@ -28,10 +28,10 @@
   grid-template-columns:minmax(0,1fr) minmax(220px,.79fr);
   min-height:245px;
   margin-top:11px;
-  border:1px solid #dfd8f7;
-  border-radius:22px;
-  background:linear-gradient(113deg,#faf9ff 0%,#f3efff 54%,#ffeff7 100%);
-  box-shadow:0 8px 26px rgba(96,70,168,.065);
+  border:1px solid #dfe3df;
+  border-radius:20px;
+  background:linear-gradient(113deg,#f8fcfa 0%,#fff 58%,#eef5ff 100%);
+  box-shadow:0 8px 26px rgba(8,93,72,.04);
   overflow:hidden;
 }
 .vault-teaser::before {
@@ -39,7 +39,7 @@
   content:"";
   width:230px;height:230px;
   right:-53px;bottom:-130px;border-radius:50%;
-  background:radial-gradient(circle,#f5b7e688,transparent 70%);
+  background:radial-gradient(circle,#d6e8ee88,transparent 70%);
   pointer-events:none;
   z-index:-1;
 }
@@ -54,26 +54,26 @@
 .vault-overline {
   display:flex;align-items:center;gap:9px;
   font-size:10px;font-weight:900;letter-spacing:1.35px;
-  color:#7652c9;margin:0 0 11px;
+  color:#315149;margin:0 0 11px;
 }
 .vault-overline-mark {
   display:inline-flex;align-items:center;justify-content:center;
   width:23px;height:23px;border-radius:7px;
-  color:#fff;background:#8a6ce1;
+  color:#fff;background:#087a5d;
 }
 .vault-overline-mark svg {width:14px;height:14px}
 .vault-copy h2 {
   margin:0;
-  color:#292343;
+  color:#101615;
   font-size:clamp(21px,2.5vw,31px);
   letter-spacing:-1.25px;
   line-height:1.22;
   font-weight:800;
   word-break:keep-all;
 }
-.vault-copy h2 span {color:#7751d4;}
+.vault-copy h2 span {color:#087a5d;}
 .vault-description {
-  color:#6d6681;
+  color:#66716e;
   font-size:12px;
   line-height:1.65;
   margin:11px 0 14px;
@@ -88,19 +88,19 @@
   padding:10px 17px;
   text-decoration:none;
   border-radius:11px;
-  color:#fff;background:#7654d8;
-  border:1px solid #7654d8;
+  color:#fff;background:#087a5d;
+  border:1px solid #087a5d;
   font-size:12px;font-weight:800;
-  box-shadow:0 5px 13px rgba(118,84,216,.15);
+  box-shadow:0 5px 13px rgba(8,122,93,.14);
   transition:background .18s,transform .18s,box-shadow .18s;
 }
 .vault-button:hover,.vault-button:focus-visible {
-  background:#5e40ba;transform:translateY(-1px);
-  box-shadow:0 8px 18px rgba(118,84,216,.2);
+  background:#075e4a;transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(8,122,93,.19);
 }
 .vault-button svg{width:15px;height:15px;}
 .vault-note {
-  font-size:10px;color:#877e98;font-weight:700;
+  font-size:10px;color:#69716e;font-weight:700;
 }
 .vault-visual {
   padding:20px 30px 20px 8px;
@@ -111,46 +111,46 @@
   width:min(100%,345px);
   border:1px solid rgba(222,212,249,.93);
   border-radius:18px;
-  background:#ffffffd9;
-  box-shadow:0 15px 32px #6350ab1b;
+  background:#ffffffed;
+  box-shadow:0 15px 32px #244b3b15;
   padding:16px 17px;
   position:relative;
-  transform:rotate(-2deg);
+  transform:none;
 }
 .vault-preview-top {
   display:flex;justify-content:space-between;align-items:center;gap:8px;
-  border-bottom:1px solid #ece5f9;padding-bottom:13px;
+  border-bottom:1px solid #dbe3df;padding-bottom:13px;
 }
 .vault-preview-label {
   font-size:10px;letter-spacing:.9px;font-weight:800;
-  color:#827595;
+  color:#66716e;
 }
 .vault-status {
   display:inline-flex;align-items:center;gap:5px;
-  font-size:9px;font-weight:800;color:#674ac0;
-  background:#f1ebff;padding:6px 9px;border-radius:20px;
+  font-size:9px;font-weight:800;color:#075e4a;
+  background:#eef7f3;padding:6px 9px;border-radius:20px;
 }
-.vault-status::before {content:"";width:6px;height:6px;border-radius:50%;background:#9b74ee;}
+.vault-status::before {content:"";width:6px;height:6px;border-radius:50%;background:#087a5d;}
 .vault-preview-body {padding:17px 0 5px;display:flex;align-items:center;gap:13px;}
 .vault-preview-symbol {
   flex:none;width:54px;height:54px;
   display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,#e6d7ff,#f7e8ff);
+  background:linear-gradient(135deg,#e8f5ef,#eef5ff);
   border-radius:17px;
-  color:#7952d8;
+  color:#087a5d;
 }
 .vault-preview-symbol svg{width:26px;height:26px;}
 .vault-preview-body strong {
-  display:block;font-size:14px;color:#302851;
+  display:block;font-size:14px;color:#101615;
   letter-spacing:-.4px;margin-bottom:6px;
 }
 .vault-preview-body p {
-  font-size:10px;line-height:1.45;color:#8c83a0;margin:0;
+  font-size:10px;line-height:1.45;color:#66716e;margin:0;
 }
 .vault-preview-foot {display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .vault-preview-foot span {
-  background:#f8f5ff;color:#75668f;
-  border:1px solid #efe8fb;
+  background:#f5f8f6;color:#315149;
+  border:1px solid #dce6e2;
   font-size:9px;font-weight:700;
   padding:6px 8px;border-radius:9px;
 }

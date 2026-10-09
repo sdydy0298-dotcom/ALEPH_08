@@ -2,7 +2,7 @@
 <html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>내 비공개 정보 | SEO DONG YEON</title>
+<title>내 비공개 공간 | SEO DONG YEON</title>
 <link rel="stylesheet" href="/private.css">
 <link rel="stylesheet" href="/info.css">
 </head><body><div class="page">
@@ -12,9 +12,9 @@
 </header>
 <main class="info-main">
 <section class="info-hero">
-<div><p class="kicker">PRIVATE WORKSPACE / MY INFORMATION</p>
-<h1>내 비공개 정보, <em>직접 관리하기.</em></h1>
-<p>이곳에 저장한 정보는 패스키로 로그인한 내 계정에서만 열람할 수 있습니다.</p></div>
+<div><p class="kicker">PRIVATE WORKSPACE / MY SPACE</p>
+<h1>내 정보와 기록을, <em>한곳에서.</em></h1>
+<p>전화번호부터 프로젝트 메모까지, 원하는 내용을 직접 기록하고 패스키로 안전하게 보호하세요.</p></div>
 <div class="info-hero-lock" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"><rect x="13" y="28" width="38" height="28" rx="6"/><path d="M21 28v-9a11 11 0 0 1 22 0v9"/><circle cx="32" cy="41" r="3"/></svg></div>
 </section>
 <section id="info-unauth" class="info-empty" hidden>
@@ -22,8 +22,8 @@
 <p>비공개 정보는 본인 인증 후에만 조회할 수 있어요.</p><a class="info-cta" href="/private.html">패스키 로그인 →</a>
 </section>
 <section id="info-app" hidden>
-<div class="info-heading"><div><span class="info-dot"></span> <strong id="info-username"></strong>의 PRIVATE 영역</div>
-<span>기록한 항목 <b id="info-total">0</b>개</span></div>
+<div class="info-heading"><div><span class="info-dot"></span> <strong id="info-username"></strong>의 비공개 공간</div>
+<span>저장된 항목 <b id="info-total">0</b>개</span></div>
 <div class="info-layout">
 <section class="info-panel" aria-labelledby="fixed-heading">
 <div class="info-panel-top"><span class="info-step">01 · BASIC INFORMATION</span><span class="info-optional">선택 입력</span></div>
@@ -41,9 +41,9 @@
 </form>
 </section>
 <section class="info-panel" aria-labelledby="custom-heading">
-<div class="info-panel-top"><span class="info-step">02 · PERSONAL ITEMS</span><span class="info-optional">자유롭게 추가</span></div>
-<h2 id="custom-heading">나만의 항목</h2>
-<p class="info-desc">프로젝트 메모, 개인 목표 등 항목을 자유롭게 추가·수정·삭제하세요.</p>
+<div class="info-panel-top"><span class="info-step">02 · MY COLLECTION</span><span class="info-optional">자유롭게 추가</span></div>
+<h2 id="custom-heading">원하는 항목 추가</h2>
+<p class="info-desc">내가 직접 항목을 만들고, 기존에 작성한 기록까지 한곳에서 관리해요.</p>
 <form id="custom-form" autocomplete="off">
 <label for="custom-label">항목 이름</label>
 <input id="custom-label" type="text" maxlength="80" required value="프로젝트 메모" placeholder="예: 프로젝트 메모">
@@ -53,7 +53,7 @@
 <div class="info-actions"><button type="button" id="cancel-custom" class="info-quiet" hidden>수정 취소</button>
 <button type="submit" id="save-custom" class="info-primary">항목 추가 <span>→</span></button></div>
 </form>
-<div class="info-custom-head"><h3>저장된 사용자 정의 항목</h3><span><b id="custom-count">0</b>개</span></div>
+<div class="info-custom-head"><h3>내가 추가한 항목</h3><span><b id="custom-count">0</b>개</span></div>
 <div id="custom-list" aria-live="polite"></div>
 </section>
 </div>

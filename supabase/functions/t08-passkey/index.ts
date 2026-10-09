@@ -15,16 +15,39 @@ const safe=x=>String(x||'').trim();
 const safeTransports=input=>{let items=input;if(typeof items==='string'){try{items=JSON.parse(items)}catch{items=[]}}return Array.isArray(items)?items.filter(x=>typeof x==='string'&&['usb','nfc','ble','internal','hybrid','smart-card'].includes(x)):[]};
 async function user(req){const token=value(req);if(!token)return null;const u=await db.unsafe('select user_id from t08.sessions where token_hash=$1 and expires_at>now()',[await hash(token)]);return u[0]?.user_id||null}
 async function oneTime(id,purpose){const c=await db.unsafe('delete from t08.challenges where id=$1 and purpose=$2 and expires_at>now() returning *',[id,purpose]);if(!c.length)throw Error('challenge missing');return c[0]}
-const notes=u=>u==='demo_b'?[['실험 목표','가상 B 계정 전용 네트워크 실험 계획'],['보안 학습','가상 B 계정 보안 공부 내용'],['프로젝트 노트','가상 B 계정 프로젝트 계획']]:[['AI 인프라 설계','가상 A 계정 프로젝트 구성 초안'],['학습 기록','가상 A 계정 VLAN 및 OSPF 메모'],['월간 목표','가상 A 계정 학습 계획']];
 Deno.serve(async req=>{
  const url=new URL(req.url),route=url.searchParams.get('route')||'auth',action=url.searchParams.get('action')||'';
  try{
  if(req.headers.get('x-t08-origin')!==ORIGIN)return deny(403);
- if(!['GET','POST','DELETE'].includes(req.method))return deny(405);
+ if(!['GET','POST','PATCH','DELETE'].includes(req.method))return deny(405);
  const uid=await user(req);
  if(route==='private'){
-  if(req.method!=='GET')return deny(405);if(!uid)return deny(401);
-  const records=await db.unsafe('select id,title,body,created_at from t08.notes where user_id=$1 order by created_at desc',[uid]);return reply({notes:records});
+  if(!uid)return deny(401);
+  if(req.method==='GET'){
+   const records=await db.unsafe('select id,title,body,created_at,updated_at from t08.notes where user_id=$1 order by updated_at desc,id desc',[uid]);
+   return reply({notes:records});
+  }
+  const body=await req.json().catch(()=>({}));
+  if(req.method==='POST'||req.method==='PATCH'){
+   const title=typeof body.title==='string'?body.title.trim():'';
+   const content=typeof body.body==='string'?body.body.trim():'';
+   if(!title||!content||title.length>120||content.length>10000)return reply({error:'제목은 1~120자, 내용은 1~10000자로 입력해주세요.'},422);
+   if(req.method==='POST'){
+    const row=await db.unsafe('insert into t08.notes(user_id,title,body) values($1,$2,$3) returning id,title,body,created_at,updated_at',[uid,title,content]);
+    return reply({note:row[0]},201);
+   }
+   const noteId=safe(body.id);
+   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(noteId))return deny(400);
+   const row=await db.unsafe('update t08.notes set title=$1,body=$2,updated_at=now() where id=$3 and user_id=$4 returning id,title,body,created_at,updated_at',[title,content,noteId,uid]);
+   return row.length?reply({note:row[0]}):reply({error:'이 기록을 수정할 권한이 없거나 존재하지 않습니다.'},404);
+  }
+  if(req.method==='DELETE'){
+   const noteId=safe(body.id);
+   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(noteId))return deny(400);
+   const removed=await db.unsafe('delete from t08.notes where id=$1 and user_id=$2 returning id',[noteId,uid]);
+   return removed.length?reply({deleted:true}):reply({error:'이 기록을 삭제할 권한이 없거나 존재하지 않습니다.'},404);
+  }
+  return deny(405);
  }
  if(route==='passkeys'){
   if(!uid)return deny(401);
@@ -69,7 +92,6 @@ Deno.serve(async req=>{
    let account=ch.user_id;
    if(!account){
     const created=await tx.unsafe('insert into t08.users(username) values($1) returning id',[ch.username]);account=created[0].id;
-    for(const [title,content] of notes(ch.username))await tx.unsafe('insert into t08.notes(user_id,title,body) values($1,$2,$3)',[account,title,content]);
    }
    await tx`insert into t08.passkeys(credential_id,user_id,public_key,counter,transports,device_type,backed_up,label) values(${credential.id},${account},${b64(credential.publicKey)},${credential.counter},${tx.json(safeTransports(b.response?.response?.transports))},${credentialDeviceType},${credentialBackedUp},${safe(b.label).slice(0,60)||'기본 패스키'})`;
   });

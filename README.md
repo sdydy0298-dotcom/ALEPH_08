@@ -7,10 +7,11 @@
 - Public: https://sdy-task08.vercel.app/
 - Private: https://sdy-task08.vercel.app/private.html
 - Record editor: https://sdy-task08.vercel.app/records.html
+- Private information: https://sdy-task08.vercel.app/info.html
 - GitHub: https://github.com/sdydy0298-dotcom/ALEPH_08
 - Database: Supabase `aleph_common` → `t08` 전용 비공개 스키마
 - Authentication backend: Supabase Edge Function `t08-passkey`
-- API gateway: Vercel Functions (`/api/auth`, `/api/private`, `/api/passkeys`)
+- API gateway: Vercel Functions (`/api/auth`, `/api/private`, `/api/passkeys`, `/api/info`)
 
 ## Authentication design
 
@@ -29,8 +30,19 @@
 - `index.html`, `style.css`, `script.js`, `images/profile.png`: T01 공개 콘텐츠
 - `private.html`, `private.css`, `private.js`: T08 개인 공간 UI와 WebAuthn 브라우저 흐름
 - `records.html`, `records.css`, `records.js`: 로그인한 사용자 전용 기록 작성·수정·삭제·목록
+- `info.html`, `info.css`, `info.js`: 비공개 기본정보 3개 선택 입력 및 사용자 정의 항목 관리
+- `api/info.js`: 정보 관리 API 프록시 (4개 서버리스 함수 중 1개)
 - `api/`: Vercel 경량 API 프록시 (서버리스 함수 3개)
 - `supabase/functions/t08-passkey/index.ts`: 패스키 인증 및 비공개 DB 서버 로직
+
+## PRIVATE 정보 저장 정책
+
+- 기본 항목: 전화번호·상세 주소·생년월일. 초깃값은 없으며 사용자가 입력한 항목만 `t08.private_fields`에 저장합니다.
+- 기본 항목 내용을 비우고 저장하면 해당 DB 행을 삭제합니다.
+- 자유 항목: 원하는 제목과 선택적으로 빈 내용을 작성하고 추가·수정·삭제합니다. `프로젝트 메모`는 입력창에 표시하는 예시이며 자동으로 DB에 기록하지 않습니다.
+- 기존 `t08.notes`, `t08.users`, `t08.passkeys`를 변경하거나 삭제하지 않습니다.
+- 조회·생성·수정·삭제는 검증된 세션의 `user_id`로 범위를 제한합니다. 클라이언트의 owner ID는 신뢰하지 않습니다.
+- 개인 정보 실데이터 대신 과제 검증 시 가상 정보를 사용하도록 권장합니다.
 
 ## Test status
 
@@ -56,3 +68,12 @@
 2. `/records.html`에서 제목과 내용을 입력해 저장하거나 기존 기록을 수정·삭제합니다.
 3. T08의 비공개 자료 3건 이상 검증을 위해 실제 작성 화면에서 서로 다른 가상 기록 3건을 직접 등록합니다. 자동 샘플은 사용하지 않습니다.
 4. 미로그인 POST/PATCH/DELETE는 401, 다른 계정의 기록 ID를 수정·삭제하려는 요청은 404가 예상되며 실제 요청/응답은 별도 검증 기록으로 남겨야 합니다.
+
+## 개인 정보 관리 검증
+
+1. 미로그인 GET/PUT/POST/PATCH/DELETE `/api/info`는 401이어야 합니다.
+2. 첫 로그인 시 기본 정보는 비어 있어야 하고 자유 항목은 자동 생성되지 않아야 합니다.
+3. 기본 정보를 일부 저장·새로고침·지우고 저장한 후 DB 반영 상태를 확인합니다.
+4. 자유 항목을 제목 `프로젝트 메모`, 빈 내용으로 저장하고 수정·삭제해봅니다.
+5. 다른 계정의 항목 ID로 PATCH/DELETE하면 성공하면 안 됩니다.
+6. 기존 패스키 로그인 및 비공개 기록의 데이터가 유지되는지 확인합니다.

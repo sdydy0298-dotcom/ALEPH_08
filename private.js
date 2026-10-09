@@ -11,10 +11,15 @@ async function api(path,method='GET',body=null){
 async function busy(button,run){button.disabled=true;try{await run()}finally{button.disabled=false}}
 async function refresh(){
  const info=await api('auth?action=me');
- el('visitor').hidden=!!info.authenticated;el('signed').hidden=!info.authenticated;
- if(!info.authenticated)return;
- el('username').textContent=info.username;
+ if(!info.authenticated){
+  el('visitor').hidden=false;
+  el('signed').hidden=true;
+  return false;
+ }
  const [records,keys]=await Promise.all([api('private'),api('passkeys')]);
+ el('username').textContent=info.username;
+ el('notes-total').textContent=String(records.notes.length);
+ el('keys-total').textContent=String(keys.passkeys.length);
  const notes=el('notes');notes.replaceChildren();
  for(const note of records.notes){
   const card=document.createElement('article');card.className='note';
@@ -32,6 +37,9 @@ async function refresh(){
   });
   row.append(info,del);list.append(row);
  }
+ el('visitor').hidden=true;
+ el('signed').hidden=false;
+ return true;
 }
 async function registration(additional){
  const username=(additional?el('username').textContent:el('reg-name').value).trim();
@@ -54,8 +62,11 @@ el('login').onclick=e=>busy(e.currentTarget,async()=>{
  const {options,challengeId}=await api('auth?action=login-options','POST',{username});
  const response=await startAuthentication({optionsJSON:options});
  await api('auth?action=login-verify','POST',{challengeId,response});
- show('로그인했습니다.');await refresh();
+ const ready=await refresh();
+ if(!ready)throw new Error('패스키 인증은 통과했지만 세션이 유지되지 않았습니다. 브라우저 쿠키 설정을 확인하고 다시 로그인해주세요.');
+ show('로그인 완료! 아래에서 내 비공개 기록과 등록된 패스키를 확인할 수 있습니다.');
+ el('signed').scrollIntoView({behavior:'smooth',block:'start'});
  }catch(e){show(e.name==='NotAllowedError'?'인증을 취소했습니다.':e.message)}
 });
 el('logout').onclick=e=>busy(e.currentTarget,async()=>{try{await api('auth?action=logout','POST',{});show('로그아웃했습니다.');await refresh()}catch(e){show(e.message)}});
-refresh().catch(()=>show('인증 서버에 연결하지 못했습니다. 잠시 후 다시 확인해주세요.'));
+refresh().then(ok=>{if(ok)show('인증된 세션으로 내 보관함을 열었습니다.');}).catch(()=>show('세션 또는 비공개 자료를 불러오지 못했습니다. 새로고침 후 다시 로그인해주세요.'));

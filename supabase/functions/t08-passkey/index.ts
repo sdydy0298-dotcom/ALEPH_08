@@ -1,6 +1,6 @@
 import postgres from 'npm:postgres@3.4.7';
 import {generateRegistrationOptions,verifyRegistrationResponse,generateAuthenticationOptions,verifyAuthenticationResponse} from 'npm:@simplewebauthn/server@13.2.2';
-const ORIGIN='https://aleph-08.vercel.app',RPID='aleph-08.vercel.app';
+const ORIGIN='https://sdy-task08.vercel.app',RPID='sdy-task08.vercel.app';
 const db=postgres(Deno.env.get('SUPABASE_DB_URL')!,{prepare:false,max:2,idle_timeout:10});
 const enc=new TextEncoder(), cookieName='t08_session';
 function reply(body,status=200,headers={}){return new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json','cache-control':'no-store',...headers}})}

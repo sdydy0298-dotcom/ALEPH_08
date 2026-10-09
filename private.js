@@ -21,10 +21,19 @@ async function refresh(){
  el('notes-total').textContent=String(records.notes.length);
  el('keys-total').textContent=String(keys.passkeys.length);
  const notes=el('notes');notes.replaceChildren();
+ if(!records.notes.length){
+  const empty=document.createElement('div');empty.className='notes-empty';
+  const heading=document.createElement('h3');heading.textContent='아직 작성한 비공개 기록이 없어요.';
+  const body=document.createElement('p');body.textContent='새 기록 작성 버튼을 눌러 직접 첫 번째 기록을 작성해 주세요.';
+  const link=document.createElement('a');link.href='/records.html';link.textContent='첫 기록 작성하기 →';
+  empty.append(heading,body,link);notes.append(empty);
+ }
  for(const note of records.notes){
   const card=document.createElement('article');card.className='note';
   const heading=document.createElement('h3');heading.textContent=note.title;
-  const body=document.createElement('p');body.textContent=note.body;card.append(heading,body);notes.append(card);
+  const body=document.createElement('p');body.textContent=note.body;
+  const link=document.createElement('a');link.href='/records.html?edit='+encodeURIComponent(note.id);link.className='note-edit-link';link.textContent='기록 수정하기 →';
+  card.append(heading,body,link);notes.append(card);
  }
  const list=el('passkeys');list.replaceChildren();
  for(const key of keys.passkeys){

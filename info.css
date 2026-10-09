@@ -37,3 +37,16 @@
 .info-message{font-size:12px;color:#075e4a;min-height:17px;margin:16px 3px;line-height:1.7}
 @media(max-width:800px){.info-layout{grid-template-columns:1fr}.info-hero{padding:25px}.info-hero-lock{display:none}.info-panel{padding:20px}}
 @media(max-width:440px){.info-custom-item{flex-direction:column}.info-item-actions{width:100%;justify-content:flex-end}}
+
+/* Unified PRIVATE collection – one list for imported notes and custom fields */
+.info-hero{background:linear-gradient(113deg,#f8fcfa 0%,#fff 59%,#eef5ff 100%)}
+.info-custom-head{margin-top:26px}
+.info-entry-date{display:block;font-size:10px;color:#88958f;margin-top:9px}
+.info-custom-item{transition:border-color .16s,background .16s}
+.info-custom-item:hover{border-color:#b8d9c9;background:#fbfefc}
+.info-custom-body p{max-height:150px;overflow-y:auto}
+.info-custom-empty{background:#f8fcfa}
+.info-primary:focus-visible,.info-item-actions button:focus-visible{
+ outline:2px solid #087a5d;outline-offset:2px
+}
+@media(max-width:520px){.info-layout{gap:12px}.info-hero h1{font-size:28px}}

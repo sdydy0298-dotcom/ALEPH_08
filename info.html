@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>내 비공개 정보 | SEO DONG YEON</title>
+<link rel="stylesheet" href="/private.css">
+<link rel="stylesheet" href="/info.css">
+</head><body><div class="page">
+<header class="nav">
+<a href="/" class="brand"><span class="brand-dot" aria-hidden="true"></span> SEO DONG YEON</a>
+<div class="right"><span class="chip">PRIVATE · T08</span><a class="back" href="/private.html">← 내 보관함</a></div>
+</header>
+<main class="info-main">
+<section class="info-hero">
+<div><p class="kicker">PRIVATE WORKSPACE / MY INFORMATION</p>
+<h1>내 비공개 정보, <em>직접 관리하기.</em></h1>
+<p>이곳에 저장한 정보는 패스키로 로그인한 내 계정에서만 열람할 수 있습니다.</p></div>
+<div class="info-hero-lock" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"><rect x="13" y="28" width="38" height="28" rx="6"/><path d="M21 28v-9a11 11 0 0 1 22 0v9"/><circle cx="32" cy="41" r="3"/></svg></div>
+</section>
+<section id="info-unauth" class="info-empty" hidden>
+<h2>패스키 로그인이 필요합니다.</h2>
+<p>비공개 정보는 본인 인증 후에만 조회할 수 있어요.</p><a class="info-cta" href="/private.html">패스키 로그인 →</a>
+</section>
+<section id="info-app" hidden>
+<div class="info-heading"><div><span class="info-dot"></span> <strong id="info-username"></strong>의 PRIVATE 영역</div>
+<span>기록한 항목 <b id="info-total">0</b>개</span></div>
+<div class="info-layout">
+<section class="info-panel" aria-labelledby="fixed-heading">
+<div class="info-panel-top"><span class="info-step">01 · BASIC INFORMATION</span><span class="info-optional">선택 입력</span></div>
+<h2 id="fixed-heading">기본 비공개 정보</h2>
+<p class="info-desc">기존 T01에서 비공개로 지정한 항목입니다. 필요할 때만 입력하세요.</p>
+<form id="fixed-form" autocomplete="off">
+<label for="info-phone">전화번호</label>
+<input id="info-phone" type="tel" maxlength="64" placeholder="입력하지 않아도 됩니다">
+<label for="info-address">상세 주소</label>
+<textarea id="info-address" rows="3" maxlength="500" placeholder="입력하지 않아도 됩니다"></textarea>
+<label for="info-birthdate">생년월일</label>
+<input id="info-birthdate" type="date">
+<p class="info-hint">항목을 비운 뒤 저장하면 해당 항목의 DB 값도 삭제됩니다.</p>
+<button id="save-fixed" type="submit" class="info-primary">기본 정보 저장 <span>→</span></button>
+</form>
+</section>
+<section class="info-panel" aria-labelledby="custom-heading">
+<div class="info-panel-top"><span class="info-step">02 · PERSONAL ITEMS</span><span class="info-optional">자유롭게 추가</span></div>
+<h2 id="custom-heading">나만의 항목</h2>
+<p class="info-desc">프로젝트 메모, 개인 목표 등 항목을 자유롭게 추가·수정·삭제하세요.</p>
+<form id="custom-form" autocomplete="off">
+<label for="custom-label">항목 이름</label>
+<input id="custom-label" type="text" maxlength="80" required value="프로젝트 메모" placeholder="예: 프로젝트 메모">
+<label for="custom-value">내용</label>
+<textarea id="custom-value" rows="5" maxlength="5000" placeholder="내용은 비워 두어도 저장할 수 있습니다"></textarea>
+<div class="info-form-footer"><span>내용은 선택 입력</span><span id="custom-chars">0 / 5,000</span></div>
+<div class="info-actions"><button type="button" id="cancel-custom" class="info-quiet" hidden>수정 취소</button>
+<button type="submit" id="save-custom" class="info-primary">항목 추가 <span>→</span></button></div>
+</form>
+<div class="info-custom-head"><h3>저장된 사용자 정의 항목</h3><span><b id="custom-count">0</b>개</span></div>
+<div id="custom-list" aria-live="polite"></div>
+</section>
+</div>
+<p id="info-message" class="info-message" role="status" aria-live="polite"></p>
+</section>
+</main><footer>© 2026 SEO DONG YEON · PRIVATE WORKSPACE</footer>
+</div><script type="module" src="/info.js"></script></body></html>

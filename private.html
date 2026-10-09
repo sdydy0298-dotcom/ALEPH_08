@@ -25,9 +25,9 @@
 <button id="register" class="outline">첫 패스키 등록 <span>↗</span></button></article>
 </section>
 <section id="signed" hidden aria-labelledby="workspace-heading">
-<div class="welcome"><div><p class="kicker">SIGNED IN · PRIVATE WORKSPACE</p><h2 id="workspace-heading"><span id="username"></span>의 개인 보관함</h2><p>본인 인증을 완료했습니다. 이 화면의 기록은 로그인한 계정에만 표시됩니다.</p></div><button id="logout" class="small" type="button">로그아웃 ↗</button></div>
+<div class="welcome"><div><p class="kicker">SIGNED IN · PRIVATE WORKSPACE</p><h2 id="workspace-heading"><span id="username"></span>의 개인 보관함</h2><p>본인 인증을 완료했습니다. 개인 정보와 기록은 내 계정에만 표시됩니다.</p></div><button id="logout" class="small" type="button">로그아웃 ↗</button></div>
 <div class="workspace-summary" aria-label="내 보관함 상태">
-  <div class="summary-tile"><span class="summary-ico" aria-hidden="true">▤</span><div><strong id="notes-total">0</strong><span>비공개 기록</span></div></div>
+  <div class="summary-tile"><span class="summary-ico" aria-hidden="true">▤</span><div><strong id="notes-total">0</strong><span>저장된 비공개 항목</span></div></div>
   <div class="summary-tile"><span class="summary-ico" aria-hidden="true">◇</span><div><strong id="keys-total">0</strong><span>등록된 패스키</span></div></div>
   <div class="summary-tile verified"><span class="summary-ico" aria-hidden="true">✓</span><div><strong>보호 중</strong><span>세션 기반 접근 제어</span></div></div>
 </div>
@@ -36,14 +36,12 @@
     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="10" width="12" height="10" rx="2"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/><path d="M12 14v2"/></svg>
   </div>
   <div class="private-info-copy">
-    <p class="kicker">MY PRIVATE INFORMATION</p>
-    <h3 id="private-info-heading">비공개 정보도 직접 관리하세요.</h3>
-    <p>전화번호 · 상세 주소 · 생년월일은 선택 입력. 프로젝트 메모 등 나만의 항목도 자유롭게 추가할 수 있어요.</p>
+    <p class="kicker">MY PRIVATE SPACE</p>
+    <h3 id="private-info-heading">내 비공개 공간</h3>
+    <p>전화번호 · 주소 · 생년월일과 직접 작성한 기록까지, 이제 한곳에서 추가하고 관리할 수 있어요.</p>
   </div>
-  <a class="private-info-link" href="/info.html">내 비공개 정보 관리 <span aria-hidden="true">→</span></a>
+  <a class="private-info-link" href="/info.html">정보 및 기록 관리 <span aria-hidden="true">→</span></a>
 </section>
-<div class="collection-heading"><div><p class="kicker">MY NOTES</p><h3>나의 비공개 기록</h3></div><a class="notes-create" href="/records.html">+ 내 기록 작성 / 관리 →</a></div>
-<div id="notes" class="notes" aria-live="polite"></div>
 <article class="management"><div><p class="kicker">SECURITY SETTINGS</p><h3>내 패스키 관리</h3><p>다른 기기를 추가로 등록해 둘 수 있습니다.</p></div>
 <div id="passkeys"></div>
 <div class="add"><input id="add-label" placeholder="새 패스키 이름" aria-label="새 패스키 이름"><button class="solid" id="add-key">패스키 추가 →</button></div>

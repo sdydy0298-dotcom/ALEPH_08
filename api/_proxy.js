@@ -18,7 +18,7 @@ export async function forward(req,res,route){
    if(cookie)res.setHeader('Set-Cookie',cookie);
    res.setHeader('X-T08-Session-Issued',cookie?'1':'0');
   }
-  if(route==='auth'&&action==='me')res.setHeader('X-T08-Session-Received',/\\bt08_session=/.test(req.headers.cookie||'')?'1':'0');
+  if(route==='auth'&&action==='me')res.setHeader('X-T08-Session-Received',String(req.headers.cookie||'').includes('t08_session=')?'1':'0');
   return res.end(await response.text());
  }catch(err){
   console.error('T08 upstream',err.message);

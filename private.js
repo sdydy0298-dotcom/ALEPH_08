@@ -25,39 +25,27 @@ async function api(path,method='GET',body=null){
 }
 async function busy(button,run){button.disabled=true;try{await run()}finally{button.disabled=false}}
 async function refresh(){
- const info=await api('auth?action=me');
- if(!info.authenticated){
+ const account=await api('auth?action=me');
+ if(!account.authenticated){
   el('visitor').hidden=false;
   el('signed').hidden=true;
   return false;
  }
- const [records,keys]=await Promise.all([api('private'),api('passkeys')]);
- el('username').textContent=info.username;
- el('notes-total').textContent=String(records.notes.length);
+ const [records,profile,keys]=await Promise.all([api('private'),api('info'),api('passkeys')]);
+ el('username').textContent=account.username;
+ el('notes-total').textContent=String(records.notes.length+profile.fields.length);
  el('keys-total').textContent=String(keys.passkeys.length);
- const notes=el('notes');notes.replaceChildren();
- if(!records.notes.length){
-  const empty=document.createElement('div');empty.className='notes-empty';
-  const heading=document.createElement('h3');heading.textContent='아직 작성한 비공개 기록이 없어요.';
-  const body=document.createElement('p');body.textContent='새 기록 작성 버튼을 눌러 직접 첫 번째 기록을 작성해 주세요.';
-  const link=document.createElement('a');link.href='/records.html';link.textContent='첫 기록 작성하기 →';
-  empty.append(heading,body,link);notes.append(empty);
- }
- for(const note of records.notes){
-  const card=document.createElement('article');card.className='note';
-  const heading=document.createElement('h3');heading.textContent=note.title;
-  const body=document.createElement('p');body.textContent=note.body;
-  const link=document.createElement('a');link.href='/records.html?edit='+encodeURIComponent(note.id);link.className='note-edit-link';link.textContent='기록 수정하기 →';
-  card.append(heading,body,link);notes.append(card);
- }
  const list=el('passkeys');list.replaceChildren();
  for(const key of keys.passkeys){
   const row=document.createElement('div');row.className='passkey';
   const info=document.createElement('div');const name=document.createElement('strong');name.textContent=key.label;
-  const date=document.createElement('small');date.textContent=new Date(key.created_at).toLocaleDateString('ko-KR')+' 등록';info.append(name,date);
+  const date=document.createElement('small');date.textContent=new Date(key.created_at).toLocaleDateString('ko-KR')+' 등록';
+  info.append(name,date);
   const del=document.createElement('button');del.textContent='삭제';del.disabled=keys.passkeys.length<=1;
-  del.onclick=()=>busy(del,async()=>{if(!confirm('이 패스키를 삭제할까요?'))return;
-    try{await api('passkeys','DELETE',{credentialId:key.credential_id});show('패스키를 삭제했습니다.');await refresh()}catch(e){show(e.message)}
+  del.onclick=()=>busy(del,async()=>{
+   if(!confirm('이 패스키를 삭제할까요?'))return;
+   try{await api('passkeys','DELETE',{credentialId:key.credential_id});show('패스키를 삭제했습니다.');await refresh();}
+   catch(error){show(error.message);}
   });
   row.append(info,del);list.append(row);
  }
@@ -96,7 +84,7 @@ el('login').onclick=e=>busy(e.currentTarget,async()=>{
  await api('auth?action=login-verify','POST',{challengeId,response});
  const ready=await refresh();
  if(!ready)throw new Error('패스키 인증은 통과했지만 세션이 유지되지 않았습니다. 브라우저 쿠키 설정을 확인하고 다시 로그인해주세요.');
- show('로그인 완료! 아래에서 내 비공개 기록과 등록된 패스키를 확인할 수 있습니다.');
+ show('로그인 완료! 정보와 기록을 관리하려면 내 비공개 공간을 열어주세요.');
  el('signed').scrollIntoView({behavior:'smooth',block:'start'});
  }catch(e){show(e.name==='NotAllowedError'?'인증을 취소했습니다.':e.message)}
 });

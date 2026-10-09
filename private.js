@@ -36,12 +36,15 @@ async function refresh(){
 async function registration(additional){
  const username=(additional?el('username').textContent:el('reg-name').value).trim();
  const label=(additional?el('add-label'):el('reg-label')).value.trim();
- const setupCode=additional?'':el('invite').value.trim();
- const {options,challengeId}=await api('auth?action=register-options','POST',{username,setupCode});
+ const {options,challengeId}=await api('auth?action=register-options','POST',{username});
  const response=await startRegistration({optionsJSON:options});
- await api('auth?action=register-verify','POST',{challengeId,response,label,setupCode});
- show(additional?'새 패스키가 등록되었습니다.':'패스키 등록이 완료되었습니다. 로그인해주세요.');
- if(additional)await refresh();
+ await api('auth?action=register-verify','POST',{challengeId,response,label});
+ if(additional){show('새 패스키가 등록되었습니다.');await refresh();}
+ else{
+  el('login-name').value=username;
+  show('패스키 등록이 완료되었습니다. 왼쪽에서 패스키 로그인을 진행해주세요.');
+  el('login').focus();
+ }
 }
 el('register').onclick=e=>busy(e.currentTarget,async()=>{try{await registration(false)}catch(e){show(e.name==='NotAllowedError'?'등록을 취소했습니다.':e.message)}});
 el('add-key').onclick=e=>busy(e.currentTarget,async()=>{try{await registration(true)}catch(e){show(e.name==='NotAllowedError'?'등록을 취소했습니다.':e.message)}});
